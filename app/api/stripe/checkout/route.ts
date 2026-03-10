@@ -4,7 +4,7 @@ import Stripe from 'stripe'
 function getStripe() {
   const key = process.env.STRIPE_SECRET_KEY
   if (!key) return null
-  return new Stripe(key, { apiVersion: '2025-05-28.basil' })
+  return new Stripe(key, { apiVersion: '2026-02-25.clover' })
 }
 
 export async function POST(request: NextRequest) {
@@ -17,21 +17,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
-  const { priceId, landlordId } = body
+  const { priceId, userId } = body
 
-  if (!priceId || !landlordId) {
+  if (!priceId || !userId) {
     return NextResponse.json(
-      { error: 'Missing required fields: priceId, landlordId' },
+      { error: 'Missing required fields: priceId, userId' },
       { status: 400 }
     )
   }
 
   if (!stripe) {
-    // Demo mode: return a fake URL
-    return NextResponse.json({
-      url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/pricing?demo=checkout`,
-      demo: true,
-    })
+    return NextResponse.json({ url: '/pricing?demo=true' })
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
@@ -49,7 +45,7 @@ export async function POST(request: NextRequest) {
       success_url: `${appUrl}/dashboard?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/pricing?checkout=canceled`,
       metadata: {
-        landlordId,
+        userId,
       },
       allow_promotion_codes: true,
     })

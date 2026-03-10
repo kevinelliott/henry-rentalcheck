@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { getMcpUsageStats } from '@/app/api/mcp/route'
+
+export const dynamic = 'force-dynamic'
 
 function checkAdminAuth(request: NextRequest): boolean {
   const adminKey = process.env.ADMIN_API_KEY
@@ -13,19 +14,25 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const [requestsResult, propertiesResult, unitsResult] = await Promise.all([
-    supabaseAdmin.from('maintenance_requests').select('id', { count: 'exact' }),
-    supabaseAdmin.from('properties').select('id', { count: 'exact' }),
-    supabaseAdmin.from('units').select('id', { count: 'exact' }),
+  const [requestsResult, propertiesResult, subsResult] = await Promise.all([
+    supabaseAdmin.from('maintenance_requests').select('id', { count: 'exact', head: true }),
+    supabaseAdmin.from('properties').select('id', { count: 'exact', head: true }),
+    supabaseAdmin.from('subscriptions').select('id', { count: 'exact', head: true }),
   ])
 
-  const mcpStats = getMcpUsageStats()
-  const mcpTotal = Object.values(mcpStats).reduce((sum, count) => sum + count, 0)
+  let userCount = 0
+  try {
+    const { data } = await supabaseAdmin.auth.admin.listUsers()
+    userCount = data?.users?.length || 0
+  } catch {
+    userCount = 0
+  }
 
   return NextResponse.json({
-    requests: requestsResult.count || 0,
+    users: userCount,
     properties: propertiesResult.count || 0,
-    tenants: unitsResult.count || 0,
-    mcp_usage: mcpTotal,
+    requests: requestsResult.count || 0,
+    subscriptions: subsResult.count || 0,
+    mcpUsage: 0,
   })
 }

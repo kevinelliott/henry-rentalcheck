@@ -26,10 +26,10 @@ export async function GET(request: NextRequest) {
 
   const requests = requestsResult.data || []
   const statusBreakdown = {
-    open: requests.filter((r) => r.status === 'open').length,
-    'in-progress': requests.filter((r) => r.status === 'in-progress').length,
+    submitted: requests.filter((r) => r.status === 'submitted').length,
+    acknowledged: requests.filter((r) => r.status === 'acknowledged').length,
+    in_progress: requests.filter((r) => r.status === 'in_progress').length,
     resolved: requests.filter((r) => r.status === 'resolved').length,
-    closed: requests.filter((r) => r.status === 'closed').length,
   }
 
   const subs = subscriptionsResult.data || []
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     stats: {
       requests: requestsResult.count || 0,
       properties: propertiesResult.count || 0,
-      tenants: unitsResult.count || 0,
+      units: unitsResult.count || 0,
       subscriptions: subs.length,
     },
     statusBreakdown,

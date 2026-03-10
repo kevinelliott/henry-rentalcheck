@@ -5,7 +5,7 @@ import { supabaseAdmin } from '@/lib/supabase'
 function getStripe() {
   const key = process.env.STRIPE_SECRET_KEY
   if (!key) return null
-  return new Stripe(key, { apiVersion: '2025-05-28.basil' })
+  return new Stripe(key, { apiVersion: '2026-02-25.clover' })
 }
 
 export async function POST(request: NextRequest) {
@@ -42,9 +42,9 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
-        const landlordId = session.metadata?.landlordId
+        const userId = session.metadata?.userId
 
-        if (!landlordId || !session.subscription || !session.customer) break
+        if (!userId || !session.subscription || !session.customer) break
 
         // Determine plan from the subscription
         const subscription = await stripe.subscriptions.retrieve(
@@ -55,13 +55,14 @@ export async function POST(request: NextRequest) {
 
         await supabaseAdmin.from('subscriptions').upsert(
           {
-            landlord_id: landlordId,
+            user_id: userId,
             stripe_customer_id: session.customer as string,
             stripe_subscription_id: session.subscription as string,
             plan,
             status: subscription.status,
+            updated_at: new Date().toISOString(),
           },
-          { onConflict: 'landlord_id' }
+          { onConflict: 'user_id' }
         )
         break
       }

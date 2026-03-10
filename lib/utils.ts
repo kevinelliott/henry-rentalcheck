@@ -40,3 +40,13 @@ export function getStatusLabel(status: string): string {
     default: return status
   }
 }
+
+export function getPriorityBadgeClass(priority: string): string {
+  switch (priority) {
+    case 'Emergency': return 'bg-red-100 text-red-800'
+    case 'High': return 'bg-orange-100 text-orange-800'
+    case 'Medium': return 'bg-yellow-100 text-yellow-800'
+    case 'Low': return 'bg-gray-100 text-gray-600'
+    default: return 'bg-gray-100 text-gray-600'
+  }
+}
