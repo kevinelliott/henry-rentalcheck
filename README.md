@@ -1,102 +1,36 @@
-# RentalCheck — Maintenance Request Management
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-A Next.js 14 (App Router, TypeScript, Tailwind CSS) web app for managing rental property maintenance requests.
+## Getting Started
 
-## Features
-
-- **Tenant-facing form** — Mobile-first submission form with property/unit selection, request type, urgency level, and description
-- **Token-based status tracking** — Tenants receive a unique token to check their request status without an account
-- **Landlord dashboard** — Filterable table of all requests with stats by status and property
-- **Request management** — Update status, add notes visible to tenants
-- **Properties & Units CRUD** — Manage your portfolio from the dashboard
-- **JWT session auth** — Password-protected landlord portal with 7-day sessions
-
-## Tech Stack
-
-- Next.js 14 (App Router)
-- TypeScript
-- Tailwind CSS
-- Supabase (PostgreSQL)
-- bcryptjs (password hashing)
-- jose (JWT)
-
-## Setup
-
-### 1. Install dependencies
-
-```bash
-npm install
-```
-
-### 2. Create a Supabase project
-
-Go to [supabase.com](https://supabase.com) and create a new project. Run the migration:
-
-```bash
-# In the Supabase SQL editor, run:
-supabase/migrations/001_init.sql
-```
-
-### 3. Configure environment variables
-
-Copy `.env.local.example` to `.env.local` and fill in:
-
-```bash
-cp .env.local.example .env.local
-```
-
-```
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-LANDLORD_PASSWORD_HASH=your-bcrypt-hash
-JWT_SECRET=your-random-secret
-```
-
-**Generating a password hash:**
-
-```bash
-node -e "const bcrypt = require('bcryptjs'); bcrypt.hash('your-password', 12).then(console.log)"
-```
-
-**Generating a JWT secret:**
-
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-```
-
-### 4. Run the development server
+First, run the development server:
 
 ```bash
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Routes
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-| Path | Description |
-|------|-------------|
-| `/submit` | Tenant maintenance request form |
-| `/status/[token]` | Tenant status tracking page |
-| `/login` | Landlord login |
-| `/dashboard` | Request management dashboard |
-| `/dashboard/requests/[id]` | Request detail & update |
-| `/dashboard/properties` | Properties & units management |
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## API
+## Learn More
 
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | `/api/auth/login` | — | Login with password |
-| POST | `/api/auth/logout` | — | Clear session |
-| GET | `/api/requests` | Yes | List all requests |
-| POST | `/api/requests` | — | Create request |
-| GET | `/api/requests/[id]` | Yes | Get single request |
-| PATCH | `/api/requests/[id]` | Yes | Update status/notes |
-| GET | `/api/properties` | — | List properties |
-| POST | `/api/properties` | Yes | Create property |
-| DELETE | `/api/properties/[id]` | Yes | Delete property |
-| PATCH | `/api/properties/[id]` | Yes | Update property |
-| GET | `/api/units?propertyId=X` | — | List units for property |
-| POST | `/api/units` | Yes | Create unit |
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
